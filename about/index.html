@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact - The Null_</title>
+    <link rel="stylesheet" href="/styles.css" />
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/game/">Game</a></li>
+                <li><a href="/discord/">Discord</a></li>
+                <li><a href="/about/">About Us</a></li>
+                <li><a href="/contact/">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-about">
+        <div class="couch-container">
+            <img src="/media/couch/couch/idle.png" class="couch" id="couch" />
+            <div id="butts">
+                <button class="conbut" id="jason-button" style="left: 120px; top:170px;"></button>
+                <button class="conbut" id="river-button" style="left: 310px; top: 160px;"></button>
+                <button class="conbut" id="michael-button" style="left: 500px; top: 160px"></button>
+                <button class="conbut" id="hortex-button" style="left: 695px; top: 170px"></button>
+            </div>
+        </div>
+        <div id="dev-info" class="hidden">
+            <h2 id="dev-name"></h2>
+            <p id="dev-desc"></p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 The Null_. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>
+
+<style>
+    .conbut {
+        top: 200px;
+        background-color: rgba(0, 0, 0, 0);
+        border: none;
+        padding: 0%;
+        width: 150px;
+        height: 60px;
+        position: absolute;
+        z-index: 3;
+        cursor: pointer;
+        image-rendering: pixelated;
+    }
+</style>
+
+<script>
+    const devTeam = ["jason", "river", "michael", "hortex"];
+    const butts = document.getElementById("butts");
+    const couch = document.getElementById("couch");
+    const cssAnimation = document.createElement("style");
+    cssAnimation.type = "text/css";
+    let accu = 0;
+
+    const devData = {
+        jason: {
+            name: "JasonX5",
+            desc: "Jason is our co-developer"
+        },
+        river: {
+            name: "riverNull_",
+            desc: "River is our lead developer"
+        },
+        michael: {
+            name: "m1szha",
+            desc: "Michael is our artist"
+        },
+        hortex: {
+            name: "Hortex",
+            desc: "Hortex is our composer"
+        }
+    }
+
+    for (const dev of devTeam) {
+        // Instantiate elements, not yet appended.
+        const but = document.querySelector(`#${dev}-button`);
+        const img = document.createElement("img");
+
+        but.addEventListener("click", () => {
+            const devInfo = devData[dev]
+            document.getElementById("dev-name").innerText = devInfo.name
+            document.getElementById("dev-desc").innerText = devInfo.desc + "\n\n* This website is FAR from finished, for now this is all the information you get"
+            document.getElementById("dev-info").classList.remove("hidden")
+        })
+
+
+        // Preload animations:
+        for (let i = 1; i <= 3; i++) {
+            const link = document.createElement('link');
+            link.rel = 'preload';
+            link.as = 'image';
+            link.href = `/media/couch/couch/${dev + i}.png`;
+            document.head.appendChild(link);
+        }
+
+        // Couch: Create animation for this dev.
+        let devAnim = "";
+        for (let i = 1; i <= 3; i++) {
+            devAnim += `${i * 33
+                }% { content: url("/media/couch/couch/${dev + i
+                }.png"); }\n`;
+        }
+        // Couch: Create "rules" to append to CSS.
+        const rules = document.createTextNode(
+            `@keyframes ${dev}anim {\n${devAnim}}\n\n`
+        );
+
+        // Couch: Append "rules" to CSS.
+        cssAnimation.appendChild(rules);
+
+        // Set ID of image component and define button hover function.
+        img.id = `img-${dev}`;
+        function buttonHover(state) {
+            // Set button image.
+            document.getElementById(
+                `img-${dev}`
+            ).src = `/media/couch/buttons/${dev}${state ? "_hover" : ""}.png`;
+
+            // Play animation.
+            if (state) {
+                console.log("animating?");
+                couch.style.animation = `${dev}anim 0.5s steps(3)`;
+                setTimeout(() => {
+                    couch.src = `/media/couch/couch/${dev}3.png`
+                }, 450)
+                console.log(couch.style.animation);
+            }
+        }
+
+        // Set base properties of button image.
+        img.width = "200";
+        img.height = "80";
+        img.src = `/media/couch/buttons/${dev}.png`;
+
+        // Space out buttons and append image to button.
+        accu += 10;
+        but.appendChild(img);
+
+        // Add hover events.
+        but.addEventListener("mouseenter", (e) => {
+            e.preventDefault();
+            buttonHover(true);
+        });
+        but.addEventListener("mouseleave", (e) => {
+            e.preventDefault();
+            buttonHover(false);
+        });
+    }
+    document.getElementsByTagName("head")[0].appendChild(cssAnimation);
+</script>
